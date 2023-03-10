@@ -160,19 +160,21 @@ server <- function(input, output, session) {
   output$x_y_table <- reactive({
     iggpd <- interactive_ggplot_data()
 
+    if(nrow(iggpd) < 2){return()}
+    
     # save(iggpd, file = "iggpd.RData")
     # load("iggpd.RData")
 
     while(nrow(iggpd) < 10){
       iggpd <- iggpd %>%
-        add_row(x0 = "", x1 = "", x2 = "", y = "")
+        add_row(x0 = NA, x1 = NA, x2 = NA, y = NA)
     }
 
     iggpd$x <- iggpd[,c("x0","x1", "x2")] %>%
       apply(
         MARGIN = 1,
         function(xrow){
-          if(any(xrow == "")){
+          if(any(is.na(xrow))){
             return(" ")
           } else {
             return(
